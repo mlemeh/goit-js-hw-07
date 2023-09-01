@@ -21,16 +21,28 @@ gallery.insertAdjacentHTML("beforeend", str);
 gallery.addEventListener("click", handleOriginalView);
 
 function handleOriginalView(event) {
-    if (event.target === event.currentTarget) return;
+  if (event.target === event.currentTarget) return;
 
-    event.preventDefault();
+  event.preventDefault();
 
-    const instance = basicLightbox.create(`
-        <div class="modal">
-            <img src="${event.target.dataset.source}" alt="${event.target.alt}">        
-        </div>
-    `)
+  const instance = basicLightbox.create(
+    `<div class="modal">
+     <img src="${event.target.dataset.source}" alt="${event.target.alt}">        
+     </div>`,
+    {
+      onShow: (instance) => { document.addEventListener("keydown", exitESC) },
+      onClose: (instance) => { document.removeEventListener("keydown", exitESC) }    
+    }
+  );
+  
+  function exitESC(event) {
+    if (event.code === "Escape") instance.close();
+  }
 
+  instance.show();
+
+
+/*
     instance.show();
 
     const doc = document;
@@ -42,4 +54,5 @@ function handleOriginalView(event) {
         instance.close();
       }
     }
+*/
 }
